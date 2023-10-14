@@ -1,12 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { client } from '../../sanity/lib/client';
+import { searchPosts } from '@/app/utils/queries';
+import Link from 'next/link';
 
 const Search = () => {
   const [query, setQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Dummy recent searches and suggestions
-  const recentSearches = ['CNS Papers', 'ReactJS', 'NodeJS'];
-  const suggestions = ['Steganography', 'Dynamic Programming', 'Greedy Algorithms'];
+  async function postFinder(query) {
+    try{
+    // Replace with actual Sanity query to fetch post data
+    const data = await client.fetch(searchPosts(query))
+    // Use the data to set the searchResults state
+    console.log(data);
+
+    // Use the postTitle from each item in the data
+    const results = data.map((item) => item);
+
+      setSearchResults(results);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (query) {
+      setIsLoading(true);
+
+      postFinder(query)
+        .then(() => {
+          setIsLoading(false);
+          setShowDropdown(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoading(false);
+        });
+    } else {
+      setShowDropdown(false);
+    }
+  }, [query]);
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-32">
@@ -28,22 +63,24 @@ const Search = () => {
         </div>
         {showDropdown && (
           <div className="absolute w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-lg">
-            <div className="text-gray-600 text-sm p-2">Recent Searches</div>
+            <div className="text-gray-600 text-sm p-2">Search Results</div>
             <ul>
-              {recentSearches.map((item, index) => (
-                <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer">
-                  {item}
-                </li>
-              ))}
+            {searchResults.map((item, index) => (
+              <Link key={index} href={item.slug.current}>
+                <div className="p-2 hover:bg-gray-200 cursor-pointer">
+                  {item.postTitle}
+                </div>
+              </Link>
+            ))}
             </ul>
-            <div className="text-gray-600 text-sm p-2">Suggestions</div>
+            {/* <div className="text-gray-600 text-sm p-2">Suggestions</div>
             <ul>
               {suggestions.map((item, index) => (
-                <li key={index} className="p-2 hover:bg-gray-200 cursor-pointer">
-                  {item}
-                </li>
+                <Link key={index} className="p-2 hover:bg-gray-200 cursor-pointer" href={'item?.slug'}>
+                  {item.postTitle}
+                </Link>
               ))}
-            </ul>
+            </ul> */}
           </div>
         )}
       </div>

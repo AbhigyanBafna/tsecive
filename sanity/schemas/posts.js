@@ -1,5 +1,5 @@
 import {defineField, defineType} from 'sanity'
-import { client } from '../lib/client'
+import { validateBranch } from '../lib/customValidations'
 
 export default defineType({
   name: 'posts',
@@ -7,23 +7,24 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'title',
+      name: 'postTitle',
       title: 'Title',
       type: 'string',
-      description: 'The topic of the post.'
+      description: 'Collection of all study material related to a specific topic.',
       // validation: Rule => Rule.required()
     }),
-    // defineField({
-    //   name: 'slug',
-    //   title: 'Slug',
-    //   type: 'slug',
-    //   hidden: false,
-    //   validation: Rule => Rule.required(),
-    //   options: {
-    //     source: 'title',
-    //     maxLength: 96,
-    //   },
-    // }),
+    defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      description: 'Part of URL used to identify post.',
+      hidden: false,
+      validation: Rule => Rule.required(),
+      options: {
+        source: 'postTitle',
+        maxLength: 96,
+      },
+    }),
     defineField({
         title: 'Branch',
         name: 'branch',
@@ -61,28 +62,7 @@ export default defineType({
         name: 'subject',
         type: 'array',
         of: [{type: 'reference', to: {type: 'subjects'}}],
-        validation: (Rule) =>
-        Rule.custom(async(subjectRefs, context) => {
-          if (subjectRefs.length !== 1) {
-            return 'You must select only one subject.'
-          }
-
-          const currentPost = context.document
-          const postBranch = currentPost.branch //Getting post branch
-
-          const query = `*[_type=="subjects" && _id == "${subjectRefs[0]._ref}"]{...}`;
-
-          let subjectBranch;
-          const subjectFetcher = await client.fetch(query).then(data => {
-            subjectBranch = data[0].branch; //Getting subject branch
-          });
-
-          if (postBranch !== subjectBranch) {
-            return 'The selected subject branch must match the post branch.'
-          }
-
-          return true
-        }),
+        validation: (Rule) => Rule.custom(validateBranch),
     }),
     defineField({
       title: 'Module',
@@ -108,6 +88,19 @@ export default defineType({
       dateFormat: 'DD-MM-YYYY',
     }
   }),
+  defineField({
+    name: 'files',
+    title: 'Files',
+    type: 'array',
+    of: [{type: 'reference', to: {type: 'fileDoc'}}],
+  }),
+  defineField({
+    name: 'links',
+    title: 'Links',
+    type: 'array',
+    of: [{type: 'reference', to: {type: 'link'}}],
+  }),
+
 //     defineField({
 //       name: 'tags',
 //       title: 'Tags',

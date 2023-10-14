@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import { validatePYQs } from '../lib/customValidations'
 
 export default defineType({
   name: 'subjects',
@@ -9,6 +10,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
+      description: 'Used to store a collection of PYQs for a specific subject as well as reference to Posts.',
     }),
     defineField({
       title: 'Branch',
@@ -23,7 +25,13 @@ export default defineType({
           { title: "Chemical", value: "CHEM" },
         ],
       },
-      // validation: (Rule) => Rule.required(),
-  }),
+    }),
+    defineField({
+      name: 'PYQs',
+      title: 'Previous Year Questions',
+      type: 'array',
+      of: [{type:'reference', to: {type: 'fileDoc'}}],
+      validation: Rule => Rule.custom(validatePYQs),
+    }),
   ],
 })
