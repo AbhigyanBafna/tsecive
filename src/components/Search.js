@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { client } from '../../sanity/lib/client';
-import { searchPosts } from '@/app/utils/queries';
+import { searchPosts } from '../utils/queries';
 import Link from 'next/link';
 
 const Search = () => {
@@ -66,7 +66,7 @@ const Search = () => {
             <div className="text-gray-600 text-sm p-2">Search Results</div>
             <ul>
             {searchResults.map((item, index) => (
-              <Link key={index} href={item.slug.current}>
+              <Link key={index} href={`/home/${item.branch.toLowerCase()}/${item.sem}/${item.subject[0].slug.current}`}>
                 <div className="p-2 hover:bg-gray-200 cursor-pointer">
                   {item.postTitle}
                 </div>

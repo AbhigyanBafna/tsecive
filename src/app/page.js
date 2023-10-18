@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Search from '@/components/Search';
-import Manual from '@/components/Manual';
+import Manual from '@/components/Grids';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function Home() {
+export default function LandingPage() {
   const [showGrid, setShowGrid] = useState(false);
 
   const branches = [
@@ -17,23 +19,39 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <Navbar showGrid={showGrid} setShowGrid={setShowGrid} />
+    <div className="flex flex-col min-h-screen">
+      <Navbar/>
 
-      <main className="flex-grow container mx-auto p-4">
-        <div className="flex flex-col h-[80vh]">
-          {showGrid ? <Manual branches={branches} /> : <Search />}
+      <main className="flex-grow flex container mx-auto p-4">
+
+        <Image
+        width={500} height={500} 
+        className="w-[700px] h-[560px] object-cover my-auto"
+        alt=""
+        src="/studyPerson.png" />
+
+        <div className='flex-grow p-3 my-auto'>
+
+            <h1 className="text-6xl font-poppins font-semibold">
+                Make your <span className="text-lightseagreen">Work</span> Easier with Us.
+            </h1>
+            <p className="text-sm font-normal font-inter text-gray-200 inline-block w-[505px]">
+                Discover TSECive, your go-to hub for organized, diverse educational resources.
+                <br/><br/>
+                Break free from the search for quality content with our user-friendly
+                platform, combining freemium access and collaborative contributions,
+                transforming how students learn and share.
+            </p>
+            <Link href="/home">
+                <button 
+                className="border-4 border-darkseagreen rounded-2xl w-60 h-16 text-2xl my-10 font-inter font-medium text-gray-100 hover:bg-darkseagreen hover:text-white hover:border-transparent transition duration-300 ease-in-out">
+                    GET STARTED
+                </button>
+            </Link>
+
         </div>
-      </main>
 
-      <button
-  className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg transition duration-300 ease-in-out transform hover:scale-110"
-  onClick={() => alert('Go to upload page')}
->
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-  </svg>
-</button>
+      </main>
 
     </div>
   );
