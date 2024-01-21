@@ -23,4 +23,10 @@ export const fetchPYQs = (branch, sem, subjectSlug) => {
   }`;
 }
 
+export const whatsAppSearch = (query) => {
+  return `*[ _type == 'posts' && postTitle match "*${query}*"][0] {
+    files[0]-> {file}
+  }`;
+}
+
 

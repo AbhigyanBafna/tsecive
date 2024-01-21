@@ -78,7 +78,9 @@ const DocumentsPage = () => {
                             fileObject.files.map((file, fileIndex) => (
                                 <div key={fileIndex} className="inline-block mr-4" style={{ minWidth: '300px', flex: 1 }}>
                                     <div className="border p-4 rounded-lg">
-                                        <h2 className="text-xl font-semibold">{file.fileName}</h2>
+                                    <h2 className="text-xl font-semibold" style={{ maxWidth: '100%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {file.fileName}
+                                    </h2>
                                         <p>File Type: {file.fileType}</p>
                                         <DownloadButton assetRef={file.file.asset._ref} />
                                     </div>
@@ -121,9 +123,9 @@ const DocumentsPage = () => {
             <div className="overflow-x-scroll whitespace-nowrap">
                 {PYQs ? (
                     <div style={{ display: 'flex', overflowX: 'auto' }}>
-                        {PYQs.map((pyqGroup, groupIndex) => (
+                        {PYQs?.map((pyqGroup, groupIndex) => (
                             <div key={groupIndex} className="inline-block mr-4" style={{ minWidth: '300px' }}>
-                                {pyqGroup.PYQs.map((pyq, index) => (
+                                {pyqGroup?.PYQs?.map((pyq, index) => (
                                     <div key={index} className="border p-4 rounded-lg">
                                         <h2 className="text-xl font-semibold">{pyq.fileName}</h2>
                                         <DownloadButton assetRef={pyq?.file.asset?._ref} />
